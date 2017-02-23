@@ -1,6 +1,28 @@
-FROM nvidia/cuda:8.0-cudnn5-runtime
+FROM nvidia/cuda:8.0-runtime-ubuntu16.04
 
 MAINTAINER Bui Nguyen Thang (Bob) <bob.bui@outlook.com>
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        cuda-core-$CUDA_PKG_VERSION \
+        cuda-misc-headers-$CUDA_PKG_VERSION \
+        cuda-command-line-tools-$CUDA_PKG_VERSION &&\
+	rm -rf /var/lib/apt/lists/*
+
+ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs:${LIBRARY_PATH}
+
+	
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl && \
+    rm -rf /var/lib/apt/lists/*
+ENV CUDNN_VERSION 5.1.10
+LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
+RUN CUDNN_DOWNLOAD_SUM=c10719b36f2dd6e9ddc63e3189affaa1a94d7d027e63b71c3f64d449ab0645ce && \
+    curl -fsSL http://developer.download.nvidia.com/compute/redist/cudnn/v5.1/cudnn-8.0-linux-x64-v5.1.tgz -O && \
+    echo "$CUDNN_DOWNLOAD_SUM  cudnn-8.0-linux-x64-v5.1.tgz" | sha256sum -c --strict - && \
+    tar -xzf cudnn-8.0-linux-x64-v5.1.tgz -C /usr/local && \
+    rm cudnn-8.0-linux-x64-v5.1.tgz && \
+    ldconfig
+
 
 RUN apt-get update && apt-get install -y \
         build-essential \
@@ -69,10 +91,15 @@ RUN mkdir /bazel && \
 
 WORKDIR / 
 RUN git clone --recurse-submodules https://github.com/tensorflow/serving
-RUN cd serving/tensorflow
-RUN ./configure
-RUN cd ..
-RUN bazel build -c opt --config=cuda tensorflow_serving/...
-RUN bazel test tensorflow_serving/...
+WORKDIR /serving
+ADD config_file.patch /serving/config_file.patch
+ADD crosstool.patch /serving/crosstool.patch
+#RUN patch -p1 /serving/config_file.patch
+RUN patch -p1 < crosstool.patch
+#WORKDIR /serving/tensorflow
+#CMD ./configure
+#WORKDIR /serving
+#RUN bazel build -c opt --config=cuda tensorflow_serving/...
+#RUN bazel test tensorflow_serving/...
 
 CMD ["/bin/bash"]

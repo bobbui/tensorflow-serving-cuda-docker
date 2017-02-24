@@ -80,16 +80,8 @@ RUN git clone --recurse-submodules https://github.com/tensorflow/serving
 WORKDIR /serving
 ADD config_file.patch /serving/config_file.patch
 ADD crosstool.patch /serving/crosstool.patch
-#RUN patch -p1 /serving/config_file.patch
 RUN patch -p1 < crosstool.patch
-#WORKDIR /serving/tensorflow
-#CMD ./configure
-#WORKDIR /serving
-#RUN bazel build -c opt --config=cuda tensorflow_serving/...
-#RUN bazel test tensorflow_serving/...
-
 RUN pip install --upgrade tensorflow-gpu --proxy http://proxy.wdf.sap.corp:8080
-
 ENV TF_NEED_CUDA 1
 
 CMD ["/bin/bash"]

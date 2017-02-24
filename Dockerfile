@@ -81,7 +81,7 @@ WORKDIR /serving
 ADD config_file.patch /serving/config_file.patch
 ADD crosstool.patch /serving/crosstool.patch
 RUN patch -p1 < crosstool.patch
-RUN pip install --upgrade tensorflow-gpu --proxy http://proxy.wdf.sap.corp:8080
+RUN pip install --upgrade tensorflow-gpu
 
 ENV TF_NEED_CUDA 1
 ENV TF_CUDNN_VERSION 5

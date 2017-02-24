@@ -2,6 +2,11 @@ FROM 8.0-cudnn5-devel-ubuntu14.04
 
 MAINTAINER Bui Nguyen Thang (Bob) <bob.bui@outlook.com>
 
+#Proxy may needed
+#ENV HTTP_PROXY http://<proxy>:<port>
+#ENV http_proxy http://<proxy>:<port>
+#ENV HTTP_PROXY http://<proxy>:<port>
+
 RUN apt-get update && apt-get install -y \
         build-essential \
         curl \

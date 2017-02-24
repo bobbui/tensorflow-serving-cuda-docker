@@ -10,7 +10,6 @@ RUN CUDNN_DOWNLOAD_SUM=c10719b36f2dd6e9ddc63e3189affaa1a94d7d027e63b71c3f64d449a
     rm cudnn-8.0-linux-x64-v5.1.tgz && \
     ldconfig
 
-
 RUN apt-get update && apt-get install -y \
         build-essential \
         curl \
@@ -34,6 +33,14 @@ RUN apt-get update && apt-get install -y \
 RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
     python get-pip.py && \
     rm get-pip.py
+
+# fix missing cudnn.so error
+RUN CUDNN_DOWNLOAD_SUM=c10719b36f2dd6e9ddc63e3189affaa1a94d7d027e63b71c3f64d449ab0645ce && \
+    curl -fsSL http://developer.download.nvidia.com/compute/redist/cudnn/v5.1/cudnn-8.0-linux-x64-v5.1.tgz -O && \
+    echo "$CUDNN_DOWNLOAD_SUM  cudnn-8.0-linux-x64-v5.1.tgz" | sha256sum -c --strict - && \
+    tar -xzf cudnn-8.0-linux-x64-v5.1.tgz -C /usr/local && \
+    rm cudnn-8.0-linux-x64-v5.1.tgz && \
+    ldconfig
 
 # Set up grpc
 
@@ -88,5 +95,9 @@ RUN patch -p1 < crosstool.patch
 #WORKDIR /serving
 #RUN bazel build -c opt --config=cuda tensorflow_serving/...
 #RUN bazel test tensorflow_serving/...
+
+RUN pip install --upgrade tensorflow-gpu --proxy http://proxy.wdf.sap.corp:8080
+
+ENV TF_NEED_CUDA 1
 
 CMD ["/bin/bash"]

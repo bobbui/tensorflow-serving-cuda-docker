@@ -10,6 +10,10 @@ This image is based from nvidia/cuda:8.0-cudnn5-devel-ubuntu14.04 include:
 - tensorflow serving source code that is ready to build 
 - other setting: proxy,enviroment variable, etc .
 
+You can using either following dockerfile:
+- Dockerfile: no tensorflow serving  build happen:  
+- Dockerfile.GUI extended from above Dockerfile with GUI and VNC server:  
+    connect to: vnc://<host>:5901 via VNC client. The VNC password is **password**. 
 After build the docker image, run tensorflow serving compilication with the desired setting.
 
 ```

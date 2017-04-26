@@ -1,5 +1,5 @@
 # tensorflow-serving-cuda-docker
-Docker image for tensorflow serving with CUDA which suitabel for development purpose
+Docker image for tensorflow serving with CUDA which suitable for development purpose
 
 This image is based from nvidia/cuda:8.0-cudnn5-devel-ubuntu14.04 include: 
 - ubuntu 14.04

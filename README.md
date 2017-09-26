@@ -1,3 +1,5 @@
+OBSOLETE: now either TFS install via package manager like apt-get or using official dockerfile from here https://github.com/tensorflow/serving/tree/master/tensorflow_serving/tools/docker 
+
 # tensorflow-serving-cuda-docker
 Docker image for tensorflow serving with CUDA which suitable for development purpose
 
